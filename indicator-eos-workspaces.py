@@ -24,7 +24,7 @@ import subprocess
 
 
 ICON_THEME = gtk.icon_theme_get_default()
-OWN_ICON_DIR = '~/indicator-workspaces/icons/';
+OWN_ICON_DIR = '~/indicator-eos-workspaces/icons/';
 
 class AppIndicatorWorkspace:
     
