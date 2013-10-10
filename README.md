@@ -18,11 +18,11 @@ Usage
 
 Notes
 ------------
-Currently dynamic workspaces are not handled. In order to use indicator-eos-workspaces set ``org>>pantheon>desktop>>gala>>behavior>>dynamic-workspaces`` to false with dconf-editor
+Currently dynamic workspaces are not handled. In order to use indicator-eos-workspaces set ``org>>pantheon>>desktop>>gala>>behavior>>dynamic-workspaces`` to false with dconf-editor
 
 or::
  
-     false
+    dconf write /org/pantheon/desktop/gala/behavior/dynamic-workspaces false
 
 indicator-eos-workspaces is going to search `workspace-x` icons in
 
@@ -34,13 +34,13 @@ Setting names of workspaces
 
 Via dconf-tool at ``org>>gnome>>desktop>>wm>>preferences>>num-workspaces`` or::
 
-    dconf write /org/gnome/desktop/wm>/preferences/num-workspaces 4
+    dconf write /org/gnome/desktop/wm/preferences/num-workspaces 4
     
 Setting number of workspaces
 
 Via dconf-tool at ``org>>gnome>>desktop>>wm>>preferences>>workspace-names`` or::
 
-    dconf write /org/gnome/desktop/wm>/preferences/workspace-names ['1','2','3','4']
+    dconf write /org/gnome/desktop/wm/preferences/workspace-names ['1','2','3','4']
 
 Todo
 ------------
