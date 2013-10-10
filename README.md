@@ -8,12 +8,24 @@ Dependecies
 ------------
 
 python-wnck
+
+    sudo apt-get install python-wnck
+
 dconf-editor
+
+    sudo apt-get install dconf-editor
 
 Usage
 ------------
 
     python indicator-eos-workspaces [own-icon-dir]
+
+or
+
+    chmod +x indicator-eos-workspaces
+    ./indicator-eos-workspaces [own-icon dir]
+
+To execute it automatically add it at _System settings/Startup Applications_
 
 
 Notes
@@ -44,7 +56,7 @@ Via dconf-tool at ``org>>gnome>>desktop>>wm>>preferences>>workspace-names`` or:
 
 Todo
 ------------
-Direct usage of dconf might(should) be replaced Gio module 
-preferences (user icon dir, num of workspaces,workspacenames) do i need this? :)
-Scrolling - later due to https://bugs.launchpad.net/indicator-application/+bug/1075152
+- Direct usage of dconf might(should) be replaced Gio module 
+- preferences (user icon dir, num of workspaces,workspacenames) do i need this? :)
+- Scrolling - later due to https://bugs.launchpad.net/indicator-application/+bug/1075152
 
