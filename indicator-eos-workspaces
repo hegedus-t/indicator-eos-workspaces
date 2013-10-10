@@ -24,14 +24,13 @@ import subprocess
 
 
 ICON_THEME = gtk.icon_theme_get_default()
-#OWN_ICON_DIR = sys.argv[1] if len(sys.argv) > 1 and os.path.isdir(sys.argv[1])  else os.getcwd()+os.path.sep+'icons'+os.path.sep
 OWN_ICON_DIR = sys.argv[1] if len(sys.argv) > 1 and os.path.isdir(sys.argv[1])  else os.path.dirname( os.path.realpath(__file__) )+os.path.sep+'icons'+os.path.sep
 
 
 class AppIndicatorWorkspace:
     
     def __init__(self):
-        print OWN_ICON_DIR
+        
         self.lockfile = os.path.normpath(tempfile.gettempdir() + '/' + os.path.basename(__file__) + '.lock')
         import fcntl
         self.fp = open(self.lockfile, 'w')
@@ -43,6 +42,11 @@ class AppIndicatorWorkspace:
 
         if self._which('dconf') == None:
             print "dconf-editor is missing\nTo install use Software manager or \n'sudu apt-get install dconf-editor' from command line"
+            sys.exit(-1)
+
+        if self._dconf( "read", "/org/pantheon/desktop/gala/behavior/dynamic-workspaces","").rstrip() == 'true' :
+            print "Dynamic workspaceses must be switched off\n"
+            print "You can disable it with dconf-tool or\n 'dconf write /org/pantheon/desktop/gala/behavior/dynamic-workspaces false'\n from command line\n"
             sys.exit(-1)
 
         self.ind = appindicator.Indicator("indicator-eos-workspaces", "", appindicator.CATEGORY_APPLICATION_STATUS)
@@ -115,10 +119,6 @@ class AppIndicatorWorkspace:
         # create a menu
         self.menu = gtk.Menu()
         self.aradio = []
-
-        # xlib way:   
-        # workspace_list = get_property(display.Display(), '_NET_DESKTOP_NAMES').value.split('\x00')[:-1]
-        # cur_ws = get_property(display.Display(), '_NET_CURRENT_DESKTOP').value[0]
 
         workspace_list = self._dconf("read", "/org/gnome/desktop/wm/preferences/workspace-names","")[2:-3].split('\', \'')
         

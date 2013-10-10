@@ -46,3 +46,5 @@ Todo
 ------------
 Direct usage of dconf might(should) be replaced Gio module 
 preferences (user icon dir, num of workspaces,workspacenames) do i need this? :)
+Scrolling - later due to https://bugs.launchpad.net/indicator-application/+bug/1075152
+
