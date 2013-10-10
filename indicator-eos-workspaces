@@ -1,4 +1,4 @@
-#!/usr/b        in/env python
+#!/usr/bin/env python
 #
 # [SNIPPET_NAME:        Workspace Switcher Application Indicator for Elementary OS            ]
 # [SNIPPET_CATEGORIES:  Application Indicator                                                 ]
@@ -24,12 +24,14 @@ import subprocess
 
 
 ICON_THEME = gtk.icon_theme_get_default()
-OWN_ICON_DIR = '~/indicator-eos-workspaces/icons/';
+#OWN_ICON_DIR = sys.argv[1] if len(sys.argv) > 1 and os.path.isdir(sys.argv[1])  else os.getcwd()+os.path.sep+'icons'+os.path.sep
+OWN_ICON_DIR = sys.argv[1] if len(sys.argv) > 1 and os.path.isdir(sys.argv[1])  else os.path.dirname( os.path.realpath(__file__) )+os.path.sep+'icons'+os.path.sep
+
 
 class AppIndicatorWorkspace:
     
     def __init__(self):
-        
+        print OWN_ICON_DIR
         self.lockfile = os.path.normpath(tempfile.gettempdir() + '/' + os.path.basename(__file__) + '.lock')
         import fcntl
         self.fp = open(self.lockfile, 'w')
