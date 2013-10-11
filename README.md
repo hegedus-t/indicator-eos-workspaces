@@ -38,7 +38,8 @@ or:
 
 indicator-eos-workspaces is going to search `workspace-x` icons in
 
-- the current themes dir (Elementary OS icon themes don't contain any workspace related icon currently)
+- the current themes dir 
+(Elementary OS icon themes don't contain any workspace related icon currently, but it gives the possibility to the theme creators.)
 - user directory if specified in first argument
 - <path to indicator-eos-workspaces>/icons
 
