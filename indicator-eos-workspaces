@@ -12,15 +12,15 @@
 
 import pygtk
 pygtk.require('2.0')
+from gi.repository.GLib import Variant
+from gi.repository.Gio import Settings
 import gtk
 import appindicator
 import wnck
 import time
-import math
 import tempfile
 import os
 import sys
-import subprocess
 
 
 ICON_THEME = gtk.icon_theme_get_default()
@@ -40,13 +40,14 @@ class AppIndicatorWorkspace:
             print "\nAnother instance is already running, quitting."
             sys.exit(-1)
 
-        if self._which('dconf') == None:
-            print "dconf-editor is missing\nTo install use Software manager or \n'sudu apt-get install dconf-editor' from command line"
-            sys.exit(-1)
-
-        if self._dconf( "read", "/org/pantheon/desktop/gala/behavior/dynamic-workspaces","").rstrip() == 'true' :
-            print "Dynamic workspaceses must be switched off\n"
-            print "You can disable it with dconf-tool or\n 'dconf write /org/pantheon/desktop/gala/behavior/dynamic-workspaces false'\n from command line\n"
+        # Test if dynamic workspaces is enabled
+        behavior_setting = "org.pantheon.desktop.gala.behavior"
+        behavior_key     = "dynamic-workspaces"
+        behavior = Settings.new(behavior_setting)
+        if behavior.get_boolean(behavior_key):
+            print "Dynamic workspaces must be switched off\n"
+            print "You can do this through the command line 'gsettings set %s %s false'\n" % (
+                    behavior_setting, behavior_key)
             sys.exit(-1)
 
         self.ind = appindicator.Indicator("indicator-eos-workspaces", "", appindicator.CATEGORY_APPLICATION_STATUS)
@@ -88,29 +89,6 @@ class AppIndicatorWorkspace:
         self.ws = self.scr.get_active_workspace()
         self.num_workspaces = self.scr.get_workspace_count()
     
-    def _which(self,program):
-
-        def is_exe(fpath):
-            return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
-
-        fpath, fname = os.path.split(program)
-        if fpath:
-            if is_exe(program):
-                return program
-        else:
-            for path in os.environ["PATH"].split(os.pathsep):
-                path = path.strip('"')
-                exe_file = os.path.join(path, program)
-                if is_exe(exe_file):
-                    return exe_file
-
-        return None
-    
-    def _dconf(self, action, dconf_path, value  ):
-
-        out = subprocess.check_output(["dconf" ,action,dconf_path,value], shell=False)
-        return out
-        
     def initialize(self):
         
         # variable init
@@ -120,17 +98,14 @@ class AppIndicatorWorkspace:
         self.menu = gtk.Menu()
         self.aradio = []
 
-        workspace_list = self._dconf("read", "/org/gnome/desktop/wm/preferences/workspace-names","")[2:-3].split('\', \'')
+        workspace_list_settings = Settings.new("org.gnome.desktop.wm.preferences")
+        workspace_list_key      = "workspace-names"
+        workspace_list          = workspace_list_settings.get_value(workspace_list_key).unpack()
         
-        # generate list if empty
-        if workspace_list[0] == '':
-            workspace_list = []
-            for number in range(self.num_desktops):
-                label = "Workspace %d" % (number+1)
-                workspace_list.append(label)
-        
-            # write dconf
-            self._dconf("write","/org/gnome/desktop/wm/preferences/workspace-names", "[\"" + "\",\"".join(workspace_list) + "\"]")
+        # If there are no named desktops, generate them and save
+        if not len(workspace_list):
+            workspace_list = ["Workspace %d" % x for x in range(1, self.num_workspaces+1)]
+            workspace_list_settings.set_value(workspace_list_key, Variant("as", workspace_list))
         
         # create items for the menu 
         for number,workspace_name in enumerate(workspace_list):
